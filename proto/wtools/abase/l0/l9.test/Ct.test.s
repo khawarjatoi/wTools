@@ -154,6 +154,20 @@ function strip( test )
   test.shouldThrowErrorSync( () => _.ct.strip( {} ) );
 }
 
+//
+
+function parse( test )
+{
+  test.open( 'without space symbols' );
+
+  test.case = 'Full parse, closing delimeter';
+  var got = _.ct.parse( 'this❮background:red❯is❮background:default❯text' );
+  var expected = [ 'this', [ 'background:red' ], 'is', [ 'background:default' ], 'text' ];
+  test.identical( got, expected );
+
+  test.close( 'without space symbols' );
+}
+
 // --
 // declaration
 // --
@@ -171,6 +185,7 @@ const Proto =
     // l0/l8/Ct.s
 
     strip,
+    parse,
 
   }
 
