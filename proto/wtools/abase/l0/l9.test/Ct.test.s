@@ -160,10 +160,36 @@ function parse( test )
 {
   test.open( 'without space symbols' );
 
-  test.case = 'Full parse, closing delimeter';
+  test.case = 'full parse, closing delimeter';
   var got = _.ct.parse( 'this❮background:red❯is❮background:default❯text' );
   var expected = [ 'this', [ 'background:red' ], 'is', [ 'background:default' ], 'text' ];
   test.identical( got, expected );
+
+  test.case = 'opening delimiter, does not have closing';
+  var got = _.ct.parse( 'this❮background:red❯is❮background:default❯text❮is' );
+  var expected = [ 'this', [ 'background:red' ], 'is', [ 'background:default' ], 'text❮is' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the beginning and false inlined';
+  var got = _.ct.parse( '❮background:red❯i❯s❮background:default❯❮text' );
+  var expected = [ [ 'background:red' ], 'i❯s', [ 'background:default' ], '❮text' ];
+  test.identical( got, expected );
+  var got = _.ct.parse( '❮background:red❯i❮s❮background:default❯❮text' );
+  var expected = [ [ 'background:red' ], 'i❮s', [ 'background:default' ], '❮text' ];
+  test.identical( got, expected );
+  var got = _.ct.parse( '❮background:red❯❮is❮background:default❯❯text' );
+  var expected = [ [ 'background:red' ], '❮is', [ 'background:default' ], '❯text' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the begining and the end';
+  var got = _.ct.parse( '❮background:red❯i❮s❮background:default❯' );
+  var expected = [ [ 'background:red' ], 'i❮s', [ 'background:default' ] ];
+  test.identical( got, expected );
+  var got = _.ct.parse( '❮background:red❯i❯s❮background:default❯' );
+  var expected = [ [ 'background:red' ], 'i❯s', [ 'background:default' ] ];
+  test.identical( got, expected );
+
+  test.case = ''
 
   test.close( 'without space symbols' );
 }
@@ -195,4 +221,4 @@ const Self = wTestSuite( Proto );
 if( typeof module !== 'undefined' && !module.parent )
 wTester.test( Self.name );
 
-})();
+} )();
