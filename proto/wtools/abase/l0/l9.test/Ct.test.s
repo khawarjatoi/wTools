@@ -156,7 +156,6 @@ function strip( test )
 
 //
 
-// eslint-disable-next-line max-statements
 function parse( test )
 {
   test.open( 'without space symbols' );
@@ -346,4 +345,4 @@ const Self = wTestSuite( Proto );
 if( typeof module !== 'undefined' && !module.parent )
 wTester.test( Self.name );
 
-} )();
+})();
