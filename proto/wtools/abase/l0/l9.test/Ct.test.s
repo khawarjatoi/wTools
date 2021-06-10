@@ -15,7 +15,6 @@ const _ = _global_.wTools;
 // l0/l8/Ct.s
 //--
 
-// eslint-disable-next-line max-statements
 function strip( test )
 {
   test.open( 'without space symbols' );
@@ -227,6 +226,8 @@ function parse( test )
 
   test.close( 'no stripping, with space symbols' );
 
+  /* - */
+
   test.open( 'stripping, with space symbols' );
 
   test.case = 'full parse, closing delimeter';
@@ -266,6 +267,37 @@ function parse( test )
   test.identical( got, expected );
 
   test.close( 'stripping, with space symbols' );
+
+  /* - */
+
+  test.open( 'prefix, postfix are same' );
+
+  test.case = 'full parse, closing delimeter';
+  var srcStr = 'this#background:red#is#background:default#text';
+  var got = _.ct.parse( { src : srcStr, prefix : '#', postfix : '#' } );
+  var expected = [ 'this', [ 'background:red' ], 'is', [ 'background:default' ], 'text' ];
+  test.identical( got, expected );
+
+  test.case = 'opening delimiter, does not have closing';
+  var srcStr = 'this#background:red#is#background:default#text#is';
+  var got = _.ct.parse( { src : srcStr, prefix : '#', postfix : '#' } );
+  var expected = [ 'this', [ 'background:red' ], 'is', [ 'background:default' ], 'text#is' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the beginning and false inlined';
+  var srcStr = '#background:red#i#s#background:default##text';
+  var got = _.ct.parse( { src : srcStr, prefix : '#', postfix : '#' } );
+  var expected = [ [ 'background:red' ], 'i', [ 's' ], 'background:default', [ '' ], 'text' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the begining and the end';
+  var srcStr = '#background:red#i#s#background:default#';
+  var got = _.ct.parse( { src : srcStr, prefix : '#', postfix : '#' } );
+  var expected = [ [ 'background:red' ], 'i', [ 's' ], 'background:default#' ];
+  test.identical( got, expected );
+
+  test.close( 'prefix, postfix are same' );
+
 }
 
 // --
