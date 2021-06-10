@@ -156,6 +156,7 @@ function strip( test )
 
 //
 
+// eslint-disable-next-line max-statements
 function parse( test )
 {
   test.open( 'without space symbols' );
@@ -297,6 +298,24 @@ function parse( test )
   test.identical( got, expected );
 
   test.close( 'prefix, postfix are same' );
+
+  /* - */
+
+  test.open( 'preserving Delimeters' );
+
+  test.case = 'full parse, closing delimeter';
+  var srcStr = 'this ❮background:red❯is❮background:default❯ text and is not';
+  var got = _.ct.parse( { src : srcStr, preservingDelimeters : 1 } );
+  var expected = [ 'this ', [ '❮background:red❯' ], 'is', [ '❮background:default❯' ], ' text and is not' ];
+  test.identical( got, expected );
+
+  test.case = 'openning delimeter does not have closing';
+  var srcStr = 'this ❮background:red❯is❮background:default❯ text and ❮ is not';
+  var got = _.ct.parse( { src : srcStr, preservingDelimeters : 1 } );
+  var expected = [ 'this ', [ '❮background:red❯' ], 'is', [ '❮background:default❯' ], ' text and ❮ is not' ];
+  test.identical( got, expected );
+
+  test.close( 'preserving Delimeters' );
 
 }
 
