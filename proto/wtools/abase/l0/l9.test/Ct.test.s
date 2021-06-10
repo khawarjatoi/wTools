@@ -226,6 +226,46 @@ function parse( test )
   test.identical( got, expected );
 
   test.close( 'no stripping, with space symbols' );
+
+  test.open( 'stripping, with space symbols' );
+
+  test.case = 'full parse, closing delimeter';
+  var srcStr = 'this ❮\nbackground:red\t❯ is ❮background:default❯ text and is not\n';
+  var got = _.ct.parse( { src : srcStr, stripping : 1 } );
+  var expected = [ 'this', [ 'background:red' ], 'is', [ 'background:default' ], 'text and is not' ];
+  test.identical( got, expected );
+
+  test.case = 'opening delimiter, does not have closing';
+  var srcStr = 'this ❮\nbackground:red\t❯ is ❮background:default❯ text and ❮is not\n';
+  var got = _.ct.parse( { src : srcStr, stripping : 1 } );
+  var expected = [ 'this', [ 'background:red' ], 'is', [ 'background:default' ], 'text and ❮is not' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the beginning and false inlined';
+  var srcStr = '❮\n\nbackground:red\t\t❯ \n\ni\t\t❯ s ❮\n\nbackground:default\t\t❯ ❮\n\ntext';
+  var got = _.ct.parse( { src : srcStr, stripping : 1 } );
+  var expected = [ [ 'background:red' ], 'i\t\t❯ s', [ 'background:default' ], '❮\n\ntext' ];
+  test.identical( got, expected );
+  var srcStr = '❮\n\nbackground:red\t\t❯ \n\ni\t\t❮ s ❮\n\nbackground:default\t\t❯ ❮\n\ntext';
+  var got = _.ct.parse( { src : srcStr, stripping : 1 } );
+  var expected = [ [ 'background:red' ], 'i\t\t❮ s', [ 'background:default' ], '❮\n\ntext' ];
+  test.identical( got, expected );
+  var srcStr = '❮\nbackground:red\t❯ ❮\nis\t ❮\nbackground:default\t❯ \t❯ \n';
+  var got = _.ct.parse( { src : srcStr, stripping : 1 } );
+  var expected = [ [ 'background:red' ], '❮\nis', [ 'background:default' ], '❯' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the begining and the end';
+  var srcStr = '❮\nbackground:red\n\t\r❯ i ❮\n s ❮\nbackground:default\n\t\r❯';
+  var got = _.ct.parse( { src : srcStr, stripping : 1 } );
+  var expected = [ [ 'background:red' ], 'i ❮\n s', [ 'background:default' ] ];
+  test.identical( got, expected );
+  var srcStr = '❮\nbackground:red\n\t\r❯ i ❯\n s ❮\nbackground:default\n\t\r❯';
+  var got = _.ct.parse( { src : srcStr, stripping : 1 } );
+  var expected = [ [ 'background:red' ], 'i ❯\n s', [ 'background:default' ] ];
+  test.identical( got, expected );
+
+  test.close( 'stripping, with space symbols' );
 }
 
 // --
