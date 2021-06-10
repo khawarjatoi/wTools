@@ -15,6 +15,7 @@ const _ = _global_.wTools;
 // l0/l8/Ct.s
 //--
 
+// eslint-disable-next-line max-statements
 function strip( test )
 {
   test.open( 'without space symbols' );
@@ -189,9 +190,42 @@ function parse( test )
   var expected = [ [ 'background:red' ], 'i❯s', [ 'background:default' ] ];
   test.identical( got, expected );
 
-  test.case = ''
-
   test.close( 'without space symbols' );
+
+  /* - */
+
+  test.open( 'no stripping, with space symbols' );
+
+  test.case = 'full parse, closing delimeter';
+  var got = _.ct.parse( 'this ❮\nbackground:red\t❯ is ❮background:default❯ text and is not\n' );
+  var expected = [ 'this ', [ '\nbackground:red\t' ], ' is ', [ 'background:default' ], ' text and is not\n' ];
+  test.identical( got, expected );
+
+  test.case = 'opening delimiter, does not have closing';
+  var got = _.ct.parse( 'this ❮\nbackground:red\t❯ is ❮background:default❯ text and ❮is not\n' );
+  var expected = [ 'this ', [ '\nbackground:red\t' ], ' is ', [ 'background:default' ], ' text and ❮is not\n' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the beginning and false inlined';
+  var got = _.ct.parse( '❮\n\nbackground:red\t\t❯ \n\ni\t\t❯ s ❮\n\nbackground:default\t\t❯ ❮\n\ntext' );
+  var expected = [ [ '\n\nbackground:red\t\t' ], ' \n\ni\t\t❯ s ', [ '\n\nbackground:default\t\t' ], ' ❮\n\ntext' ];
+  test.identical( got, expected );
+  var got = _.ct.parse( '❮\n\nbackground:red\t\t❯ \n\ni\t\t❮ s ❮\n\nbackground:default\t\t❯ ❮\n\ntext' );
+  var expected = [ [ '\n\nbackground:red\t\t' ], ' \n\ni\t\t❮ s ', [ '\n\nbackground:default\t\t' ], ' ❮\n\ntext' ];
+  test.identical( got, expected );
+  var got = _.ct.parse( '❮\nbackground:red\t❯ ❮\nis ❮\nbackground:default\t❯ \t❯ \n' );
+  var expected = [ [ '\nbackground:red\t' ], ' ❮\nis ', [ '\nbackground:default\t' ], ' \t❯ \n' ];
+  test.identical( got, expected );
+
+  test.case = 'inlined at the begining and the end';
+  var got = _.ct.parse( '❮\nbackground:red\n\t\r❯ i ❮\n s ❮\nbackground:default\n\t\r❯' );
+  var expected = [ [ '\nbackground:red\n\t\r' ], ' i ❮\n s ', [ '\nbackground:default\n\t\r' ] ];
+  test.identical( got, expected );
+  var got = _.ct.parse( '❮\nbackground:red\n\t\r❯ i ❯\n s ❮\nbackground:default\n\t\r❯' );
+  var expected = [ [ '\nbackground:red\n\t\r' ], ' i ❯\n s ', [ '\nbackground:default\n\t\r' ] ];
+  test.identical( got, expected );
+
+  test.close( 'no stripping, with space symbols' );
 }
 
 // --
