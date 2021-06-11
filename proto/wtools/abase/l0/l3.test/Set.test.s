@@ -10,7 +10,7 @@
 
   const _global = _global_;
   const _ = _global.wTools;
-  const __ = _globals.testing.wTools;
+  const __ = _globals_.testing.wTools;
 
   // --
   // tests
@@ -285,6 +285,99 @@
     test.shouldThrowErrorSync( () => _.set.lengthOf( new Set( {} ) ) );
   }
 
+  //
+
+  function hasKey( test )
+  {
+    test.case = 'no argument, no key';
+    var src = new Set();
+    var got = _.set.hasKey( src );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'empty array, no key';
+    var src = new Set( [] );
+    var got = _.set.hasKey( src );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'empty array, with key';
+    var src = new Set( [] );
+    var got = _.set.hasKey( src, 1 );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'number array, with key';
+    var src = new Set( [ 1, 2, 3 ] );
+    var got = _.set.hasKey( src, 1 );
+    var expected = true;
+    test.identical( got, expected );
+
+    test.case = 'number array, with wrong key';
+    var src = new Set( [ 1, 2, 3 ] );
+    var got = _.set.hasKey( src, 4 );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'array of numbers, with key';
+    var src = new Set( [ '1', '2', '3' ] );
+    var got = _.set.hasKey( src, 1 );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'array of strings, with key';
+    var src = new Set( [ 'a', 'b', 'c' ] );
+    var got = _.set.hasKey( src, 'a' );
+    var expected = true;
+    test.identical( got, expected );
+
+    test.case = 'array of strings, with wrong key';
+    var src = new Set( [ 'a', 'b', 'c' ] );
+    var got = _.set.hasKey( src, 'x' );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'array of strings, with wrong key';
+    var src = new Set( [ 'a', 'b', 'c' ] );
+    var got = _.set.hasKey( src, 'x' );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'multidimentional array, with key';
+    var src = new Set( [ [ 1, 2, 3 ] ] );
+    var got = _.set.hasKey( src, 2 );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'multiple args, with key';
+    var src = new Set( [ 'a', [ 1, 2, 3 ] ] );
+    var got = _.set.hasKey( src, 'a' );
+    var expected = true;
+    test.identical( got, expected );
+
+    test.case = 'string, with key';
+    var src = new Set( 'a' );
+    var got = _.set.hasKey( src, 'a' );
+    var expected = true;
+    test.identical( got, expected );
+
+    test.case = 'string, with wrong key';
+    var src = new Set( 'a' );
+    var got = _.set.hasKey( src, 'b' );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'empty sting, empty key';
+    var src = new Set( '' );
+    var got = _.set.hasKey( src, '' );
+    var expected = false;
+    test.identical( got, expected );
+
+    test.case = 'wrong src';
+    test.shouldThrowErrorSync( () => _.set.hasKey( 2, 2 ) );
+    test.shouldThrowErrorSync( () => _.set.hasKey( new Set( {} ) ) );
+  }
+
   // --
   // declaration
   // --
@@ -300,6 +393,7 @@
       aptRight,
 
       lengthOf,
+      hasKey,
     },
   };
 
